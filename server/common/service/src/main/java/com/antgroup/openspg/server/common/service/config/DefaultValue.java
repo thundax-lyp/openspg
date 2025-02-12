@@ -47,6 +47,9 @@ public class DefaultValue {
   @Value("${python.paths:}")
   private String pythonPaths;
 
+  @Value("${python.env:}")
+  private String pythonEnv;
+
   @Value("${objectStorage.builder.bucketName:}")
   private String builderBucketName;
 }
