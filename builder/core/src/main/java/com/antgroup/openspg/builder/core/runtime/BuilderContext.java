@@ -15,36 +15,36 @@ package com.antgroup.openspg.builder.core.runtime;
 
 import com.antgroup.openspg.builder.model.pipeline.ExecuteNode;
 import com.antgroup.openspg.builder.model.record.RecordAlterOperationEnum;
-import java.io.Serializable;
-import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+
+import java.io.Serializable;
+import java.util.Map;
 
 @Setter
 @Getter
 @Accessors(chain = true)
 public class BuilderContext implements Serializable {
 
-  private static final long serialVersionUID = 2446709406202543546L;
+    private long projectId;
+    private String project;
+    private String jobName;
+    private RecordAlterOperationEnum operation;
+    private BuilderCatalog catalog;
 
-  private long projectId;
-  private String project;
-  private String jobName;
-  private RecordAlterOperationEnum operation;
-  private BuilderCatalog catalog;
+    private String pythonExec;
+    private String pythonPaths;
+    private String pythonEnv;
+    private String graphStoreUrl;
+    private String searchEngineUrl;
+    private String cacheUrl;
 
-  private String pythonExec;
-  private String pythonPaths;
-  private String graphStoreUrl;
-  private String searchEngineUrl;
-  private String cacheUrl;
+    private int batchSize = 1;
+    private int parallelism = 1;
+    private boolean enableLeadTo;
+    private Integer modelExecuteNum = 5;
 
-  private int batchSize = 1;
-  private int parallelism = 1;
-  private boolean enableLeadTo;
-  private Integer modelExecuteNum = 5;
-
-  private Map<String, ExecuteNode> executeNodes;
-  private String schemaUrl;
+    private Map<String, ExecuteNode> executeNodes;
+    private String schemaUrl;
 }

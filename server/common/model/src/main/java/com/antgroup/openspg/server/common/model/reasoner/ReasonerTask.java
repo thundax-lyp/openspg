@@ -16,22 +16,23 @@ import com.antgroup.openspg.server.common.model.reasoner.result.Edge;
 import com.antgroup.openspg.server.common.model.reasoner.result.Node;
 import com.antgroup.openspg.server.common.model.reasoner.result.Path;
 import com.antgroup.openspg.server.common.model.reasoner.result.TableResult;
+import lombok.Data;
+
 import java.util.List;
 import java.util.Map;
-import lombok.Data;
 
 @Data
 public class ReasonerTask {
-  private String taskId;
-  private Long projectId;
-  private String graphStoreUrl;
-  private String dsl;
-  private Map<String, String> params;
-  private StatusEnum status;
-  private String resultMessage;
-  private TableResult resultTableResult;
-  private List<Node> resultNodes;
-  private List<Edge> resultEdges;
-  private List<Path> resultPaths;
-  private Object extend;
+    private String taskId;
+    private Long projectId;
+    private String graphStoreUrl;
+    private String dsl;
+    private Map<String, String> params;
+    private TaskStatusEnum status;
+    private String resultMessage;
+    private TableResult resultTableResult;
+    private List<Node> resultNodes;
+    private List<Edge> resultEdges;
+    private List<Path> resultPaths;
+    private Object extend;
 }

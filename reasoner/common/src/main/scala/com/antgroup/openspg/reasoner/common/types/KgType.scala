@@ -30,6 +30,7 @@ case object KTCharacter extends BasicKgType
 case object KTInteger extends BasicKgType
 case object KTLong extends BasicKgType
 case object KTDouble extends BasicKgType
+
 // corresponding to java object
 case object KTObject extends BasicKgType
 case object KTDate extends BasicKgType

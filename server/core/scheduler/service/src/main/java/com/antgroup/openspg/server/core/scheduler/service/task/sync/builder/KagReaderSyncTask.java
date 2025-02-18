@@ -30,59 +30,63 @@ import com.antgroup.openspg.server.core.scheduler.model.service.SchedulerJob;
 import com.antgroup.openspg.server.core.scheduler.model.service.SchedulerTask;
 import com.antgroup.openspg.server.core.scheduler.model.task.TaskExecuteContext;
 import com.antgroup.openspg.server.core.scheduler.service.task.sync.SyncTaskExecuteTemplate;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component("kagReaderSyncTask")
 public class KagReaderSyncTask extends SyncTaskExecuteTemplate {
 
-  @Autowired private DefaultValue value;
+    @Autowired
+    private DefaultValue value;
 
-  @Autowired private BuilderJobService builderJobService;
+    @Autowired
+    private BuilderJobService builderJobService;
 
-  @Autowired private ProjectService projectService;
+    @Autowired
+    private ProjectService projectService;
 
-  private ObjectStorageClient objectStorageClient;
+    private ObjectStorageClient objectStorageClient;
 
-  @Override
-  public SchedulerEnum.TaskStatus submit(TaskExecuteContext context) {
-    SchedulerJob job = context.getJob();
-    BuilderJob builderJob = builderJobService.getById(Long.valueOf(job.getInvokerId()));
-    String url = builderJob.getFileUrl();
-    JSONObject config =
-        JSON.parseObject(builderJob.getExtension()).getJSONObject(BuilderConstant.YU_QUE_CONFIG);
-    String token = config == null ? null : config.getString(BuilderConstant.TOKEN);
-    List<ChunkRecord.Chunk> chunks = readSource(context, url, token);
-    SchedulerTask task = context.getTask();
-    String fileKey =
-        CommonUtils.getTaskStorageFileKey(
-            task.getProjectId(), task.getInstanceId(), task.getId(), task.getType());
-    objectStorageClient = ObjectStorageClientDriverManager.getClient(value.getObjectStorageUrl());
-    objectStorageClient.saveString(
-        value.getBuilderBucketName(), JSON.toJSONString(chunks), fileKey);
-    context.addTraceLog(
-        "Store the results of the read operator. file:%s/%s",
-        value.getBuilderBucketName(), fileKey);
-    task.setOutput(fileKey);
-    return SchedulerEnum.TaskStatus.FINISH;
-  }
+    @Override
+    public SchedulerEnum.TaskStatus submit(TaskExecuteContext context) {
+        SchedulerJob job = context.getJob();
+        BuilderJob builderJob = builderJobService.getById(Long.valueOf(job.getInvokerId()));
+        String url = builderJob.getFileUrl();
+        JSONObject config =
+                JSON.parseObject(builderJob.getExtension()).getJSONObject(BuilderConstant.YU_QUE_CONFIG);
+        String token = config == null ? null: config.getString(BuilderConstant.TOKEN);
+        List<ChunkRecord.Chunk> chunks = readSource(context, url, token);
+        SchedulerTask task = context.getTask();
+        String fileKey =
+                CommonUtils.getTaskStorageFileKey(
+                        task.getProjectId(), task.getInstanceId(), task.getId(), task.getType());
+        objectStorageClient = ObjectStorageClientDriverManager.getClient(value.getObjectStorageUrl());
+        objectStorageClient.saveString(
+                value.getBuilderBucketName(), JSON.toJSONString(chunks), fileKey);
+        context.addTraceLog(
+                "Store the results of the read operator. file:%s/%s",
+                value.getBuilderBucketName(), fileKey);
+        task.setOutput(fileKey);
+        return SchedulerEnum.TaskStatus.FINISH;
+    }
 
-  public List<ChunkRecord.Chunk> readSource(TaskExecuteContext context, String url, String token) {
-    Long projectId = context.getInstance().getProjectId();
-    Project project = projectService.queryById(projectId);
-    context.addTraceLog("Invoke read operator:%s", PythonInvokeMethod.BRIDGE_READER.getMethod());
-    List<ChunkRecord.Chunk> chunkList =
-        com.antgroup.openspg.builder.core.physical.utils.CommonUtils.readSource(
-            value.getPythonExec(),
-            value.getPythonPaths(),
-            value.getSchemaUrlHost(),
-            project,
-            url,
-            token);
-    context.addTraceLog(
-        "The read operator was invoked successfully. chunk size:%s", chunkList.size());
+    public List<ChunkRecord.Chunk> readSource(TaskExecuteContext context, String url, String token) {
+        Long projectId = context.getInstance().getProjectId();
+        Project project = projectService.queryById(projectId);
+        context.addTraceLog("Invoke read operator:%s", PythonInvokeMethod.BRIDGE_READER.getMethod());
+        List<ChunkRecord.Chunk> chunkList = com.antgroup.openspg.builder.core.physical.utils.CommonUtils.readSource(
+                value.getPythonExec(),
+                value.getPythonPaths(),
+                value.getPythonEnv(),
+                value.getSchemaUrlHost(),
+                project,
+                url,
+                token
+        );
+        context.addTraceLog("The read operator was invoked successfully. chunk size:%s", chunkList.size());
 
-    return chunkList;
-  }
+        return chunkList;
+    }
 }

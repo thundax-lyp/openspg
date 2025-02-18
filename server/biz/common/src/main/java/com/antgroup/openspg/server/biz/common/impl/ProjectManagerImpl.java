@@ -33,14 +33,15 @@ import com.antgroup.openspg.server.core.schema.service.alter.sync.BaseSchemaSync
 import com.antgroup.openspg.server.core.schema.service.alter.sync.SchemaStorageEnum;
 import com.antgroup.openspg.server.core.schema.service.alter.sync.SchemaSyncerFactory;
 import com.antgroup.openspg.server.core.schema.service.type.SPGTypeService;
-import java.util.List;
-import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import java.util.List;
+import java.util.Set;
 
 @Service
 @Slf4j

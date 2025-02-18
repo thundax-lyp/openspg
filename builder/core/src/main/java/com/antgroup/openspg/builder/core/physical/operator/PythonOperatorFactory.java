@@ -22,42 +22,44 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class PythonOperatorFactory implements OperatorFactory {
 
-  private String pythonExec;
-  private String pythonPaths;
-  private String hostAddr;
-  private Long projectId;
+    private String pythonExec;
+    private String pythonPaths;
+    private String pythonEnv;
+    private String hostAddr;
+    private Long projectId;
 
-  private PythonOperatorFactory() {}
+    private PythonOperatorFactory() {
+    }
 
-  public static OperatorFactory getInstance() {
-    return new PythonOperatorFactory();
-  }
+    public static OperatorFactory getInstance() {
+        return new PythonOperatorFactory();
+    }
 
-  @Override
-  public void init(BuilderContext context) {
-    pythonExec = context.getPythonExec();
-    pythonPaths = context.getPythonPaths();
-    hostAddr = context.getSchemaUrl();
-    projectId = context.getProjectId();
-    log.info("pythonExec={}, pythonPaths={}", pythonExec, pythonPaths);
-  }
+    @Override
+    public void init(BuilderContext context) {
+        this.pythonExec = context.getPythonExec();
+        this.pythonPaths = context.getPythonPaths();
+        this.pythonEnv = context.getPythonEnv();
+        this.hostAddr = context.getSchemaUrl();
+        this.projectId = context.getProjectId();
+        log.info("pythonExec={}, pythonPaths={}", this.pythonExec, this.pythonPaths);
+    }
 
-  @Override
-  public void loadOperator(OperatorConfig config) {}
+    public void loadOperator(OperatorConfig config) {
+    }
 
-  @Override
-  public Object invoke(OperatorConfig config, Object... input) {
-    PemjaConfig pemjaConfig =
-        new PemjaConfig(
-            pythonExec,
-            pythonPaths,
-            hostAddr,
-            projectId,
-            config.getModulePath(),
-            config.getClassName(),
-            config.getMethod(),
-            config.getParams(),
-            config.getParamsPrefix());
-    return PemjaUtils.invoke(pemjaConfig, input);
-  }
+    public Object invoke(OperatorConfig config, Object... input) {
+        PemjaConfig pemjaConfig = new PemjaConfig(
+                this.pythonExec,
+                this.pythonPaths,
+                this.pythonEnv, this.hostAddr,
+                this.projectId,
+                config.getModulePath(),
+                config.getClassName(),
+                config.getMethod(),
+                config.getParams(),
+                config.getParamsPrefix()
+        );
+        return PemjaUtils.invoke(pemjaConfig, input);
+    }
 }

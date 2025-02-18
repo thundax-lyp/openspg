@@ -29,90 +29,90 @@ import com.antgroup.openspg.common.constants.BuilderConstant;
 import com.antgroup.openspg.common.util.pemja.PythonInvokeMethod;
 import com.antgroup.openspg.server.common.model.project.Project;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class ParagraphSplitProcessor extends BasePythonProcessor<ParagraphSplitNodeConfig> {
 
-  private ExecuteNode node = new ExecuteNode();
-  private Project project;
+    private ExecuteNode node = new ExecuteNode();
+    private Project project;
 
-  public ParagraphSplitProcessor(String id, String name, ParagraphSplitNodeConfig config) {
-    super(id, name, config);
-  }
-
-  @Override
-  public void doInit(BuilderContext context) throws BuilderException {
-    super.doInit(context);
-    if (context.getExecuteNodes() != null) {
-      this.node = context.getExecuteNodes().get(getId());
+    public ParagraphSplitProcessor(String id, String name, ParagraphSplitNodeConfig config) {
+        super(id, name, config);
     }
-    project = JSON.parseObject(context.getProject(), Project.class);
-  }
 
-  @Override
-  public List<BaseRecord> process(List<BaseRecord> inputs) {
-    node.setStatus(StatusEnum.RUNNING);
-    node.addTraceLog("Start split document...");
-    List<BaseRecord> results = new ArrayList<>();
-    JSONObject pyConfig = new JSONObject();
-    JSONObject extension = JSON.parseObject(config.getExtension());
-    CommonUtils.getSplitterConfig(
-        pyConfig,
-        context.getPythonExec(),
-        context.getPythonPaths(),
-        context.getSchemaUrl(),
-        project,
-        extension);
-    for (BaseRecord record : inputs) {
-      StringRecord stringRecord = (StringRecord) record;
-
-      String fileUrl = stringRecord.getDocument();
-      String token = config.getToken();
-      List<ChunkRecord.Chunk> chunks = readSource(fileUrl, token);
-      node.addTraceLog("invoke split operator:%s", config.getOperatorConfig().getClassName());
-      for (ChunkRecord.Chunk chunk : chunks) {
-        node.addTraceLog("invoke split chunk:%s", chunk.getName());
-        Map map = new ObjectMapper().convertValue(chunk, Map.class);
-        List<Object> result =
-            (List<Object>)
-                operatorFactory.invoke(
-                    config.getOperatorConfig(),
-                    BuilderConstant.SPLITTER_ABC,
-                    pyConfig.toJSONString(),
-                    map);
-        List<ChunkRecord.Chunk> chunkList =
-            JSON.parseObject(
-                JSON.toJSONString(result), new TypeReference<List<ChunkRecord.Chunk>>() {});
-        for (ChunkRecord.Chunk splitChunk : chunkList) {
-          ChunkRecord chunkRecord = new ChunkRecord(splitChunk);
-          results.add(chunkRecord);
+    @Override
+    public void doInit(BuilderContext context) throws BuilderException {
+        super.doInit(context);
+        if (context.getExecuteNodes() != null) {
+            this.node = context.getExecuteNodes().get(getId());
         }
-        node.addTraceLog(
-            "invoke split chunk:%s size:%s succeed", chunk.getName(), chunkList.size());
-      }
-      node.addTraceLog(
-          "invoke split operator:%s succeed", config.getOperatorConfig().getClassName());
+        project = JSON.parseObject(context.getProject(), Project.class);
     }
-    node.addTraceLog("Split document complete. number of paragraphs:%s", results.size());
-    node.setStatus(StatusEnum.FINISH);
-    return results;
-  }
 
-  public List<ChunkRecord.Chunk> readSource(String url, String token) {
-    node.addTraceLog("invoke read operator:%s", PythonInvokeMethod.BRIDGE_READER.getMethod());
-    List<ChunkRecord.Chunk> chunkList =
-        CommonUtils.readSource(
-            context.getPythonExec(),
-            context.getPythonPaths(),
-            context.getSchemaUrl(),
-            project,
-            url,
-            token);
-    node.addTraceLog(
-        "invoke read operator:%s chunks:%s succeed",
-        PythonInvokeMethod.BRIDGE_READER.getMethod(), chunkList.size());
-    return chunkList;
-  }
+    @Override
+    public List<BaseRecord> process(List<BaseRecord> inputs) {
+        node.setStatus(StatusEnum.RUNNING);
+        node.addTraceLog("Start split document...");
+        List<BaseRecord> results = new ArrayList<>();
+        JSONObject pyConfig = new JSONObject();
+        JSONObject extension = JSON.parseObject(config.getExtension());
+        CommonUtils.getSplitterConfig(
+                pyConfig,
+                context.getPythonExec(),
+                context.getPythonPaths(),
+                context.getPythonEnv(),
+                context.getSchemaUrl(),
+                project,
+                extension
+        );
+        for (BaseRecord record : inputs) {
+            StringRecord stringRecord = (StringRecord) record;
+
+            String fileUrl = stringRecord.getDocument();
+            String token = config.getToken();
+            List<ChunkRecord.Chunk> chunks = readSource(fileUrl, token);
+            node.addTraceLog("invoke split operator:%s", config.getOperatorConfig().getClassName());
+            for (ChunkRecord.Chunk chunk : chunks) {
+                node.addTraceLog("invoke split chunk:%s", chunk.getName());
+                Map map = new ObjectMapper().convertValue(chunk, Map.class);
+                List<Object> result = (List<Object>) operatorFactory.invoke(
+                        config.getOperatorConfig(),
+                        BuilderConstant.SPLITTER_ABC,
+                        pyConfig.toJSONString(),
+                        map
+                );
+                List<ChunkRecord.Chunk> chunkList = JSON.parseObject(JSON.toJSONString(result), new TypeReference<List<ChunkRecord.Chunk>>() {
+                });
+                for (ChunkRecord.Chunk splitChunk : chunkList) {
+                    ChunkRecord chunkRecord = new ChunkRecord(splitChunk);
+                    results.add(chunkRecord);
+                }
+                node.addTraceLog(
+                        "invoke split chunk:%s size:%s succeed", chunk.getName(), chunkList.size());
+            }
+            node.addTraceLog(
+                    "invoke split operator:%s succeed", config.getOperatorConfig().getClassName());
+        }
+        node.addTraceLog("Split document complete. number of paragraphs:%s", results.size());
+        node.setStatus(StatusEnum.FINISH);
+        return results;
+    }
+
+    public List<ChunkRecord.Chunk> readSource(String url, String token) {
+        node.addTraceLog("invoke read operator:%s", PythonInvokeMethod.BRIDGE_READER.getMethod());
+        List<ChunkRecord.Chunk> chunkList = CommonUtils.readSource(
+                context.getPythonExec(),
+                context.getPythonPaths(),
+                context.getPythonEnv(),
+                context.getSchemaUrl(),
+                project,
+                url,
+                token
+        );
+        node.addTraceLog("invoke read operator:%s chunks:%s succeed", PythonInvokeMethod.BRIDGE_READER.getMethod(), chunkList.size());
+        return chunkList;
+    }
 }

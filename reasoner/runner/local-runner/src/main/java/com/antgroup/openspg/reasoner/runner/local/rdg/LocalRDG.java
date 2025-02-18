@@ -33,21 +33,11 @@ import com.antgroup.openspg.reasoner.graphstate.model.MergeTypeEnum;
 import com.antgroup.openspg.reasoner.kggraph.KgGraph;
 import com.antgroup.openspg.reasoner.kggraph.impl.KgGraphImpl;
 import com.antgroup.openspg.reasoner.kggraph.impl.KgGraphSplitStaticParameters;
-import com.antgroup.openspg.reasoner.lube.block.AddPredicate;
-import com.antgroup.openspg.reasoner.lube.block.AddProperty;
-import com.antgroup.openspg.reasoner.lube.block.AddVertex;
-import com.antgroup.openspg.reasoner.lube.block.DDLOp;
-import com.antgroup.openspg.reasoner.lube.block.SortItem;
+import com.antgroup.openspg.reasoner.lube.block.*;
 import com.antgroup.openspg.reasoner.lube.catalog.struct.Field;
 import com.antgroup.openspg.reasoner.lube.common.expr.Aggregator;
 import com.antgroup.openspg.reasoner.lube.common.expr.Expr;
-import com.antgroup.openspg.reasoner.lube.common.pattern.Connection;
-import com.antgroup.openspg.reasoner.lube.common.pattern.EdgePattern;
-import com.antgroup.openspg.reasoner.lube.common.pattern.LinkedPatternConnection;
-import com.antgroup.openspg.reasoner.lube.common.pattern.NodePattern;
-import com.antgroup.openspg.reasoner.lube.common.pattern.PartialGraphPattern;
-import com.antgroup.openspg.reasoner.lube.common.pattern.Pattern;
-import com.antgroup.openspg.reasoner.lube.common.pattern.PatternElement;
+import com.antgroup.openspg.reasoner.lube.common.pattern.*;
 import com.antgroup.openspg.reasoner.lube.common.rule.Rule;
 import com.antgroup.openspg.reasoner.lube.logical.NodeVar;
 import com.antgroup.openspg.reasoner.lube.logical.PropertyVar;
@@ -60,27 +50,7 @@ import com.antgroup.openspg.reasoner.lube.logical.planning.LeftOuterJoin$;
 import com.antgroup.openspg.reasoner.lube.physical.rdg.RDG;
 import com.antgroup.openspg.reasoner.lube.physical.rdg.Row;
 import com.antgroup.openspg.reasoner.pattern.PatternMatcher;
-import com.antgroup.openspg.reasoner.rdg.common.ExtractRelationImpl;
-import com.antgroup.openspg.reasoner.rdg.common.ExtractVertexImpl;
-import com.antgroup.openspg.reasoner.rdg.common.FoldEdgeImpl;
-import com.antgroup.openspg.reasoner.rdg.common.FoldRepeatEdgeInfo;
-import com.antgroup.openspg.reasoner.rdg.common.GroupByKeyItem;
-import com.antgroup.openspg.reasoner.rdg.common.GroupByKgGraphImpl;
-import com.antgroup.openspg.reasoner.rdg.common.KgGraphAddFieldsImpl;
-import com.antgroup.openspg.reasoner.rdg.common.KgGraphAggregateImpl;
-import com.antgroup.openspg.reasoner.rdg.common.KgGraphDropFieldsImpl;
-import com.antgroup.openspg.reasoner.rdg.common.KgGraphEdgeDirectionImpl;
-import com.antgroup.openspg.reasoner.rdg.common.KgGraphFirstEdgeAggImpl;
-import com.antgroup.openspg.reasoner.rdg.common.KgGraphListProcess;
-import com.antgroup.openspg.reasoner.rdg.common.KgGraphRenameImpl;
-import com.antgroup.openspg.reasoner.rdg.common.KgGraphSortImpl;
-import com.antgroup.openspg.reasoner.rdg.common.LinkEdgeImpl;
-import com.antgroup.openspg.reasoner.rdg.common.ReasonerJoinImpl;
-import com.antgroup.openspg.reasoner.rdg.common.SelectRowImpl;
-import com.antgroup.openspg.reasoner.rdg.common.SinkRelationImpl;
-import com.antgroup.openspg.reasoner.rdg.common.UnfoldEdgeImpl;
-import com.antgroup.openspg.reasoner.rdg.common.UnfoldReduceDuplicateImpl;
-import com.antgroup.openspg.reasoner.rdg.common.UnfoldRepeatEdgeInfo;
+import com.antgroup.openspg.reasoner.rdg.common.*;
 import com.antgroup.openspg.reasoner.rdg.common.model.JoinItem;
 import com.antgroup.openspg.reasoner.recorder.EmptyRecorder;
 import com.antgroup.openspg.reasoner.recorder.IExecutionRecorder;
@@ -97,20 +67,6 @@ import com.antgroup.openspg.reasoner.utils.RunnerUtil;
 import com.antgroup.openspg.reasoner.warehouse.utils.WareHouseUtils;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Future;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import scala.Tuple2;
@@ -118,6 +74,13 @@ import scala.collection.JavaConversions;
 import scala.collection.immutable.List;
 import scala.collection.immutable.Map;
 import scala.collection.immutable.Set;
+
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class LocalRDG extends RDG<LocalRDG> {
@@ -183,7 +146,7 @@ public class LocalRDG extends RDG<LocalRDG> {
 
   private java.util.Map<IVertexId, String> getStartIdWithHitRuleValue(
       java.util.List<KgGraph<IVertexId>> kgGraphList, java.util.List<Rule> rules) {
-    java.util.Map<IVertexId, String> startIdSet = new java.util.HashMap();
+    java.util.Map<IVertexId, String> startIdSet = new java.util.HashMap<>();
     java.util.List<Tuple2<String, java.util.List<String>>> fields = new ArrayList<>();
     for (Rule rule : rules) {
       fields.addAll(WareHouseUtils.getRuleUsedAliasEle(rule));

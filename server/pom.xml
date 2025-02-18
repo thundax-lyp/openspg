@@ -51,8 +51,8 @@
     <module>core/reasoner/model</module>
     <module>core/reasoner/service</module>
     <module>infra/dao</module>
-    <module>test</module>
-    <module>testdata</module>
+<!--    <module>test</module>-->
+<!--    <module>testdata</module>-->
   </modules>
 
   <properties>

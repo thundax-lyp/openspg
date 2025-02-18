@@ -16,6 +16,10 @@ package com.antgroup.openspg.common.util.pemja;
 public enum PythonInvokeMethod {
   BRIDGE_READER("kag.bridge.spg_server_bridge", "SPGServerBridge", "run_reader", ""),
   BRIDGE_COMPONENT("kag.bridge.spg_server_bridge", "SPGServerBridge", "run_component", ""),
+  BRIDGE_LLM_CHECKER("bridge.spg_server_bridge", "SPGServerBridge", "run_llm_config_check", ""),
+  BRIDGE_VECTORIZER_CHECKER("bridge.spg_server_bridge", "SPGServerBridge", "run_vectorizer_config_check", ""),
+  BRIDGE_SOLVER_MAIN("bridge.spg_server_bridge", "SPGServerBridge", "run_solver", ""),
+
   BATCH_VECTORIZER(
       "kag.builder.component.vectorizer.batch_vectorizer", "BatchVectorizer", "_handle", "**"),
   LLM_CONFIG_CHECKER("kag.common.llm.llm_config_checker", "LLMConfigChecker", "check", ""),

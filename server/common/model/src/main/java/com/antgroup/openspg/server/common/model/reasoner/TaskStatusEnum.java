@@ -10,22 +10,14 @@
  * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
  * or implied.
  */
+package com.antgroup.openspg.server.common.model.reasoner;
 
-package com.antgroup.openspg.reasoner.context;
-
-import org.junit.Assert;
-
-public class StringInitializer extends BaseContextInitializer<String> {
-
-  private int count = 0;
-
-  @Override
-  public String initOnDriver() {
-    return String.valueOf(count++);
-  }
-
-  @Override
-  public void dispatchToWorker(String obj) {
-    Assert.assertEquals(obj, "0");
-  }
+public enum TaskStatusEnum {
+    INIT,
+    RUNNING,
+    EXTRACTING,
+    ERROR,
+    CANCELED,
+    TIMEOUT,
+    FINISH,
 }
