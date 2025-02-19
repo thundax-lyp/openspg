@@ -1366,27 +1366,26 @@ public class LocalRDG extends RDG<LocalRDG> {
 
         java.util.Set<IVertex<IVertexId, IProperty>> vertexSet = new HashSet<>();
         java.util.Set<IEdge<IVertexId, IProperty>> edgeSet = new HashSet<>();
-        this.kgGraphList.forEach(
-                graph -> {
-                    for (String alias : graph.getVertexAlias()) {
-                        vertexSet.addAll(graph.getVertex(alias));
-                    }
-                    for (String alias : graph.getEdgeAlias()) {
-                        java.util.List<IEdge<IVertexId, IProperty>> edges = graph.getEdge(alias);
-                        for (IEdge<IVertexId, IProperty> edge : edges) {
-                            if (edge instanceof PathEdge) {
-                                if (((PathEdge<?, ?, ?>) edge).getVertexList() != null) {
-                                    vertexSet.addAll(
-                                            ((PathEdge<IVertexId, IProperty, IProperty>) edge).getVertexList());
-                                }
-                                if (((PathEdge<?, ?, ?>) edge).getEdgeList() != null) {
-                                    edgeSet.addAll(((PathEdge<IVertexId, IProperty, IProperty>) edge).getEdgeList());
-                                }
-                            }
-                            edgeSet.add(edge);
+        this.kgGraphList.forEach(graph -> {
+            for (String alias : graph.getVertexAlias()) {
+                vertexSet.addAll(graph.getVertex(alias));
+            }
+            for (String alias : graph.getEdgeAlias()) {
+                java.util.List<IEdge<IVertexId, IProperty>> edges = graph.getEdge(alias);
+                for (IEdge<IVertexId, IProperty> edge : edges) {
+                    if (edge instanceof PathEdge) {
+                        if (((PathEdge<?, ?, ?>) edge).getVertexList() != null) {
+                            vertexSet.addAll(
+                                    ((PathEdge<IVertexId, IProperty, IProperty>) edge).getVertexList());
+                        }
+                        if (((PathEdge<?, ?, ?>) edge).getEdgeList() != null) {
+                            edgeSet.addAll(((PathEdge<IVertexId, IProperty, IProperty>) edge).getEdgeList());
                         }
                     }
-                });
+                    edgeSet.add(edge);
+                }
+            }
+        });
         localReasonerResult.getVertexList().addAll(vertexSet);
         localReasonerResult.getEdgeList().addAll(edgeSet);
         return localReasonerResult;
