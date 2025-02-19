@@ -14,7 +14,9 @@
 package com.antgroup.openspg.reasoner.io.model;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class CanvasTableInfo extends AbstractTableInfo {
   private String queryId;

@@ -14,13 +14,14 @@
 package com.antgroup.openspg.server.common.model.job;
 
 import com.antgroup.openspg.server.common.model.base.BaseModel;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Getter
 @AllArgsConstructor
@@ -31,6 +32,7 @@ public class SubGraph extends BaseModel {
   private List<Edge> resultEdges;
   private String className;
 
+  @EqualsAndHashCode(callSuper = true)
   @Data
   public static class Node extends BaseModel {
     private static final long serialVersionUID = 2507408653380201214L;
@@ -41,6 +43,7 @@ public class SubGraph extends BaseModel {
     private Map<String, Object> properties = new HashMap<>();
   }
 
+  @EqualsAndHashCode(callSuper = true)
   @Data
   public static class Edge extends BaseModel {
     private static final long serialVersionUID = 6567121968824686072L;

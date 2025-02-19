@@ -14,9 +14,12 @@
 package com.antgroup.openspg.server.common.model.data;
 
 import com.antgroup.openspg.server.common.model.base.BaseModel;
-import java.util.Map;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+import java.util.Map;
+
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class DataRecord extends BaseModel {
 

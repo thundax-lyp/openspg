@@ -13,11 +13,13 @@
 package com.antgroup.openspg.reasoner.io.model;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * @author kejian
  * @version SLSTableInfo.java, v 0.1 2024年03月05日 11:49 AM kejian
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class SLSTableInfo extends AbstractTableInfo {
   /** sls project */

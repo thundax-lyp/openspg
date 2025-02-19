@@ -14,10 +14,13 @@
 package com.antgroup.openspg.server.common.model.account;
 
 import com.antgroup.openspg.server.common.model.base.BaseModel;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import java.util.Date;
 import java.util.List;
-import lombok.Data;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class Account extends BaseModel {
 

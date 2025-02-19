@@ -15,8 +15,10 @@ package com.antgroup.openspg.server.common.model.project;
 
 import com.antgroup.openspg.server.common.model.base.BaseModel;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /** @version UserRoleInfo.java, v 0.1 2024年11月26日 上午11:41 */
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class AccountRoleInfo extends BaseModel {
 

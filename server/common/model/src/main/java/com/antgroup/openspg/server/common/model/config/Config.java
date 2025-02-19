@@ -14,9 +14,12 @@
 package com.antgroup.openspg.server.common.model.config;
 
 import com.antgroup.openspg.server.common.model.base.BaseModel;
-import java.util.Date;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+import java.util.Date;
+
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class Config extends BaseModel {
   /** primary key */

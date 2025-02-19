@@ -14,32 +14,27 @@
 package com.antgroup.openspg.reasoner.context;
 
 import com.antgroup.openspg.reasoner.task.TaskRecord;
+import lombok.Getter;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+@Getter
 public class DispatchContextInfo implements Serializable {
-  private final TaskRecord taskRecord;
 
-  private final Map<Class<? extends BaseContextInitializer>, Object> contextObjectMap =
-      new HashMap<>();
+    private final TaskRecord taskRecord;
+    private final Map<Class<? extends BaseContextInitializer>, Object> contextObjectMap = new HashMap<>();
 
-  public DispatchContextInfo(
-      TaskRecord taskRecord,
-      Map<Class<? extends BaseContextInitializer>, Object> contextObjectMap) {
-    this.taskRecord = taskRecord;
-    this.contextObjectMap.putAll(contextObjectMap);
-  }
+    public DispatchContextInfo(
+            TaskRecord taskRecord,
+            Map<Class<? extends BaseContextInitializer>, Object> contextObjectMap
+    ) {
+        this.taskRecord = taskRecord;
+        this.contextObjectMap.putAll(contextObjectMap);
+    }
 
-  public Map<Class<? extends BaseContextInitializer>, Object> getContextObjectMap() {
-    return contextObjectMap;
-  }
-
-  public TaskRecord getTaskRecord() {
-    return taskRecord;
-  }
-
-  public boolean isEmpty() {
-    return contextObjectMap.isEmpty();
-  }
+    public boolean isEmpty() {
+        return contextObjectMap.isEmpty();
+    }
 }

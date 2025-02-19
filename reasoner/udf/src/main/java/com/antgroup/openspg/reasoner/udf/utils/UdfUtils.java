@@ -176,7 +176,7 @@ public class UdfUtils {
       }
       String className = arg.getClass().getName();
       if ("java.util.ArrayList".equals(className)) {
-        ArrayList list = (ArrayList) arg;
+        ArrayList<?> list = (ArrayList<?>) arg;
         String memberType;
         if ((list.isEmpty() || list.get(0) == null)) {
           memberType = null;

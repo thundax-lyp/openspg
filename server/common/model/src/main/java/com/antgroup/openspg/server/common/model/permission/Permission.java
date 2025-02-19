@@ -16,7 +16,9 @@ package com.antgroup.openspg.server.common.model.permission;
 import com.antgroup.openspg.server.common.model.base.BaseModel;
 import com.antgroup.openspg.server.common.model.project.AccountRoleInfo;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class Permission extends BaseModel {
 

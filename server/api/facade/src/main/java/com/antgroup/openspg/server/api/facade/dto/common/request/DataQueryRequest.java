@@ -17,7 +17,9 @@ import com.antgroup.openspg.server.common.model.base.BaseRequest;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class DataQueryRequest extends BaseRequest {
   private Long sessionId;

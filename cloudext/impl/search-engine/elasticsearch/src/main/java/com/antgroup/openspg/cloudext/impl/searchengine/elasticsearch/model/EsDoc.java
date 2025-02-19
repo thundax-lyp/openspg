@@ -16,7 +16,9 @@ package com.antgroup.openspg.cloudext.impl.searchengine.elasticsearch.model;
 import com.antgroup.openspg.server.common.model.base.BaseValObj;
 import java.util.Map;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class EsDoc extends BaseValObj {
 

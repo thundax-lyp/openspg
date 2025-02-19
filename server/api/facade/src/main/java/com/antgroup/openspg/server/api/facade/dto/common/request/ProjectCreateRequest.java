@@ -15,7 +15,9 @@ package com.antgroup.openspg.server.api.facade.dto.common.request;
 
 import com.antgroup.openspg.server.common.model.base.BaseRequest;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class ProjectCreateRequest extends BaseRequest {
 
