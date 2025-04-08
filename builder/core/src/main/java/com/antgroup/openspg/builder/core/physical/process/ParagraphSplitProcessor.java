@@ -16,7 +16,7 @@ package com.antgroup.openspg.builder.core.physical.process;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
-import com.antgroup.openspg.builder.core.physical.utils.CommonUtils;
+import com.antgroup.openspg.builder.core.physical.utils.BuilderCommonUtils;
 import com.antgroup.openspg.builder.core.runtime.BuilderContext;
 import com.antgroup.openspg.builder.model.exception.BuilderException;
 import com.antgroup.openspg.builder.model.pipeline.ExecuteNode;
@@ -59,7 +59,7 @@ public class ParagraphSplitProcessor extends BasePythonProcessor<ParagraphSplitN
         List<BaseRecord> results = new ArrayList<>();
         JSONObject pyConfig = new JSONObject();
         JSONObject extension = JSON.parseObject(config.getExtension());
-        CommonUtils.getSplitterConfig(
+        BuilderCommonUtils.getSplitterConfig(
                 pyConfig,
                 context.getPythonExec(),
                 context.getPythonPaths(),
@@ -77,8 +77,8 @@ public class ParagraphSplitProcessor extends BasePythonProcessor<ParagraphSplitN
             node.addTraceLog("invoke split operator:%s", config.getOperatorConfig().getClassName());
             for (ChunkRecord.Chunk chunk : chunks) {
                 node.addTraceLog("invoke split chunk:%s", chunk.getName());
-                Map map = new ObjectMapper().convertValue(chunk, Map.class);
-                List<Object> result = (List<Object>) operatorFactory.invoke(
+                Map<?, ?> map = new ObjectMapper().convertValue(chunk, Map.class);
+                Object result = operatorFactory.invoke(
                         config.getOperatorConfig(),
                         BuilderConstant.SPLITTER_ABC,
                         pyConfig.toJSONString(),
@@ -103,7 +103,7 @@ public class ParagraphSplitProcessor extends BasePythonProcessor<ParagraphSplitN
 
     public List<ChunkRecord.Chunk> readSource(String url, String token) {
         node.addTraceLog("invoke read operator:%s", PythonInvokeMethod.BRIDGE_READER.getMethod());
-        List<ChunkRecord.Chunk> chunkList = CommonUtils.readSource(
+        List<ChunkRecord.Chunk> chunkList = BuilderCommonUtils.readSource(
                 context.getPythonExec(),
                 context.getPythonPaths(),
                 context.getPythonEnv(),

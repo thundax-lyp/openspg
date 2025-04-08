@@ -22,15 +22,15 @@ import com.ql.util.express.instruction.opdata.OperateDataAttr;
 import org.apache.commons.lang3.StringUtils;
 
 public class OperatorGetSPO extends OperatorBase {
-  @Override
-  public OperateData executeInner(InstructionSetContext parent, ArraySwap list) throws Exception {
-    Object[] parameterNames = new Object[list.length];
+    @Override
+    public OperateData executeInner(InstructionSetContext parent, ArraySwap list) throws Exception {
+        Object[] parameterNames = new Object[list.length];
 
-    for (int i = 0; i < list.length; ++i) {
-      parameterNames[i] = ((OperateDataAttr) list.get(i)).getName();
+        for (int i = 0; i < list.length; ++i) {
+            parameterNames[i] = ((OperateDataAttr) list.get(i)).getName();
+        }
+        String key = StringUtils.join(parameterNames, "_");
+        Object result = parent.getParent().get(key);
+        return OperateDataCacheManager.fetchOperateData(result, Object.class);
     }
-    String key = StringUtils.join(parameterNames, "_");
-    Object result = parent.getParent().get(key);
-    return OperateDataCacheManager.fetchOperateData(result, Object.class);
-  }
 }

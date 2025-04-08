@@ -55,7 +55,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class CommonUtils {
+public class BuilderCommonUtils {
 
     private static final String DOT = ".";
 
@@ -108,7 +108,7 @@ public class CommonUtils {
             BaseSPGRecord baseSPGRecord = VertexRecordConvertor.toAdvancedRecord(spgType, String.valueOf(node.getId()), stringMap);
             records.add(baseSPGRecord);
         }
-        records.forEach(CommonUtils::replaceUnSpreadableStandardProperty);
+        records.forEach(BuilderCommonUtils::replaceUnSpreadableStandardProperty);
         return records;
     }
 
@@ -124,15 +124,15 @@ public class CommonUtils {
             List<SubGraphRecord.Node> resultNodes = record.getResultNodes();
             if (resultNodes != null) {
                 resultNodes.forEach(resultNode -> {
-                    String label = CommonUtils.labelPrefix(namespace, resultNode.getLabel());
+                    String label = BuilderCommonUtils.labelPrefix(namespace, resultNode.getLabel());
                     resultNode.setLabel(label);
                 });
             }
             List<SubGraphRecord.Edge> resultEdges = record.getResultEdges();
             if (resultEdges != null) {
                 resultEdges.forEach(resultEdge -> {
-                    String fromType = CommonUtils.labelPrefix(namespace, resultEdge.getFromType());
-                    String toType = CommonUtils.labelPrefix(namespace, resultEdge.getToType());
+                    String fromType = BuilderCommonUtils.labelPrefix(namespace, resultEdge.getFromType());
+                    String toType = BuilderCommonUtils.labelPrefix(namespace, resultEdge.getToType());
                     resultEdge.setFromType(fromType);
                     resultEdge.setToType(toType);
                 });

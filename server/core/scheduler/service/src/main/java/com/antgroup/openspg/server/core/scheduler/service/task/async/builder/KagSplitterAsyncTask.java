@@ -15,6 +15,7 @@ package com.antgroup.openspg.server.core.scheduler.service.task.async.builder;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
+import com.antgroup.openspg.builder.core.physical.utils.BuilderCommonUtils;
 import com.antgroup.openspg.builder.model.record.ChunkRecord;
 import com.antgroup.openspg.cloudext.interfaces.objectstorage.ObjectStorageClient;
 import com.antgroup.openspg.cloudext.interfaces.objectstorage.ObjectStorageClientDriverManager;
@@ -147,17 +148,17 @@ public class KagSplitterAsyncTask extends AsyncTaskExecuteTemplate {
 
     private static class SplitterTaskCallable extends MemoryTaskServer.MemoryTaskCallable<String> {
 
-        private DefaultValue value;
+        private final DefaultValue value;
 
-        private BuilderJobService builderJobService;
+        private final BuilderJobService builderJobService;
 
-        private ProjectService projectService;
+        private final ProjectService projectService;
 
-        private ObjectStorageClient objectStorageClient;
+        private final ObjectStorageClient objectStorageClient;
 
-        private TaskExecuteContext context;
+        private final TaskExecuteContext context;
 
-        private List<String> inputs;
+        private final List<String> inputs;
 
         public SplitterTaskCallable(
                 DefaultValue value,
@@ -206,7 +207,7 @@ public class KagSplitterAsyncTask extends AsyncTaskExecuteTemplate {
             SchedulerJob job = context.getJob();
             BuilderJob builderJob = builderJobService.getById(Long.valueOf(job.getInvokerId()));
             JSONObject extension = JSON.parseObject(builderJob.getExtension());
-            PemjaConfig pemjaConfig = com.antgroup.openspg.builder.core.physical.utils.CommonUtils.getSplitterConfig(
+            PemjaConfig pemjaConfig = BuilderCommonUtils.getSplitterConfig(
                     pyConfig,
                     value.getPythonExec(),
                     value.getPythonPaths(),
@@ -218,9 +219,8 @@ public class KagSplitterAsyncTask extends AsyncTaskExecuteTemplate {
             addTraceLog("Invoke the split operator");
             for (ChunkRecord.Chunk chunk : chunks) {
                 addTraceLog("Split chunk(%s)", chunk.getName());
-                Map map = new ObjectMapper().convertValue(chunk, Map.class);
-                List<Object> result = (List<Object>) PemjaUtils.invoke(
-                        pemjaConfig, BuilderConstant.SPLITTER_ABC, pyConfig.toJSONString(), map);
+                Map<?, ?> map = new ObjectMapper().convertValue(chunk, Map.class);
+                Object result = PemjaUtils.invoke(pemjaConfig, BuilderConstant.SPLITTER_ABC, pyConfig.toJSONString(), map);
                 List<ChunkRecord.Chunk> datas = JSON.parseObject(JSON.toJSONString(result), new TypeReference<List<ChunkRecord.Chunk>>() {
                 });
                 chunkList.addAll(datas);

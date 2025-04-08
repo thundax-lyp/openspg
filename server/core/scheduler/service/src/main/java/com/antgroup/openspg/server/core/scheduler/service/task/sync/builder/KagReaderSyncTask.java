@@ -14,6 +14,7 @@ package com.antgroup.openspg.server.core.scheduler.service.task.sync.builder;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.antgroup.openspg.builder.core.physical.utils.BuilderCommonUtils;
 import com.antgroup.openspg.builder.model.record.ChunkRecord;
 import com.antgroup.openspg.cloudext.interfaces.objectstorage.ObjectStorageClient;
 import com.antgroup.openspg.cloudext.interfaces.objectstorage.ObjectStorageClientDriverManager;
@@ -76,7 +77,7 @@ public class KagReaderSyncTask extends SyncTaskExecuteTemplate {
         Long projectId = context.getInstance().getProjectId();
         Project project = projectService.queryById(projectId);
         context.addTraceLog("Invoke read operator:%s", PythonInvokeMethod.BRIDGE_READER.getMethod());
-        List<ChunkRecord.Chunk> chunkList = com.antgroup.openspg.builder.core.physical.utils.CommonUtils.readSource(
+        List<ChunkRecord.Chunk> chunkList = BuilderCommonUtils.readSource(
                 value.getPythonExec(),
                 value.getPythonPaths(),
                 value.getPythonEnv(),
