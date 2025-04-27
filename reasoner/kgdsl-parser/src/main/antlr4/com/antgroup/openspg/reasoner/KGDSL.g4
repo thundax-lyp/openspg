@@ -614,7 +614,7 @@ function_expr : function_name left_paren function_args? right_paren;
 function_name : identifier | list_common_agg_name;
 function_args : list_element_list;
 
-lambda_expr : left_paren binary_lambda_args right_paren labmda_body_array value_expression;
+lambda_expr : left_paren binary_lambda_args right_paren lambda_body_array value_expression;
 binary_lambda_args : identifier comma identifier ;
 // 逻辑 计算
 logic_value_expression : logic_term (or logic_term)*;
@@ -718,7 +718,7 @@ solidus : '/' ;
 double_solidus : '//' ;
 underscore : '_' ;
 vertical_bar : '|' ;
-labmda_body_array : '=>' ;
+lambda_body_array : '=>' ;
 necessary_symbol : '<=' ;
 
 separator : ( comment|whitespace )+ ;
@@ -986,7 +986,7 @@ Define (Med.drug)-[基本用药方案]->(药品/`ACEI+噻嗪类利尿剂`) {
 */
 define_rule_on_relation_to_concept : define_rule_on_relation_to_concept_structure (description)?;
 
-logical_deduce : deduce_premise labmda_body_array deduce_conclusion priority_assignment_statement? description?;
+logical_deduce : deduce_premise lambda_body_array deduce_conclusion priority_assignment_statement? description?;
 
 deduce_premise : logical_statement;
 
