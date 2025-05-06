@@ -967,7 +967,7 @@ fragment ID_Start : [\p{ID_Start}] ;
 thinker_script: (
 		define_rule_on_concept
 		| define_rule_on_relation_to_concept
-		| define_proiority_rule_on_concept
+		| define_priority_rule_on_concept
 		| logical_deduce
 		| necessary_logical_deduce
 )*;
@@ -1002,7 +1002,7 @@ DefinePriority(危险水平分层) {
   低危=10
 }
 */
-define_proiority_rule_on_concept : define_priority_rule_on_concept_structure description?;
+define_priority_rule_on_concept : define_priority_rule_on_concept_structure description?;
 
 define_rule_on_concept_structure:
     the_define_structure_symbol concept_declaration rule_and_action_body;
