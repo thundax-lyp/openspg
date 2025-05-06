@@ -1019,7 +1019,7 @@ rule_name_declaration : left_bracket element_pattern_declaration_and_filler righ
 the_define_priority_symbol : DEFINE_PRIORITY;
 
 define_priority_rule_on_concept_structure:
-    the_define_priority_symbol priority_declaration assiginment_structure;
+    the_define_priority_symbol priority_declaration assignment_structure;
 
 priority_declaration: variable_declaration;
 
@@ -1036,11 +1036,11 @@ rule_body_content : rule_prefix? logical_statement (rule_prefix logical_statemen
 
 logical_statement : value_expression;
 
-action_body_structure : create_action_symbol assiginment_structure;
+action_body_structure : create_action_symbol assignment_structure;
 
-assiginment_structure : left_brace muliti_assignment_statement right_brace;
+assignment_structure : left_brace multi_assignment_statement right_brace;
 
-muliti_assignment_statement : assignment_statement*;
+multi_assignment_statement : assignment_statement*;
 
 assignment_statement : identifier assignment_operator logical_statement;
 
