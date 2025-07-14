@@ -18,12 +18,10 @@ import com.antgroup.openspg.builder.core.reason.ReasonProcessor;
 import com.antgroup.openspg.builder.core.runtime.BuilderContext;
 import com.antgroup.openspg.builder.core.runtime.impl.DefaultBuilderCatalog;
 import com.antgroup.openspg.builder.model.pipeline.config.GraphStoreSinkNodeConfig;
-import com.antgroup.openspg.builder.model.pipeline.config.Neo4jSinkNodeConfig;
 import com.antgroup.openspg.builder.model.record.BaseRecord;
 import com.antgroup.openspg.builder.model.record.RecordAlterOperationEnum;
 import com.antgroup.openspg.builder.model.record.SubGraphRecord;
 import com.antgroup.openspg.builder.runner.local.physical.sink.impl.GraphStoreSinkWriter;
-import com.antgroup.openspg.builder.runner.local.physical.sink.impl.Neo4jSinkWriter;
 import com.antgroup.openspg.core.schema.model.identifier.SPGTypeIdentifier;
 import com.antgroup.openspg.core.schema.model.type.BaseSPGType;
 import com.antgroup.openspg.core.schema.model.type.ConceptList;
@@ -41,10 +39,9 @@ import com.antgroup.openspg.server.biz.schema.ConceptManager;
 import com.antgroup.openspg.server.biz.schema.SchemaManager;
 import com.antgroup.openspg.server.biz.service.GraphManager;
 import com.google.common.collect.Lists;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+
+import java.util.*;
+
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -179,12 +176,12 @@ public class GraphController extends BaseController {
           public Boolean action() {
             ProjectSchema projectSchema = schemaManager.getProjectSchema(request.getProjectId());
             boolean enableLeadTo =
-                (request.getEnableLeadTo() == null) ? false : request.getEnableLeadTo();
+                    request.getEnableLeadTo() != null && request.getEnableLeadTo();
             Map<SPGTypeIdentifier, ConceptList> conceptLists =
                 getConceptLists(enableLeadTo, projectSchema);
-            Neo4jSinkWriter writer =
-                new Neo4jSinkWriter(
-                    UUID.randomUUID().toString(), "图存储", new Neo4jSinkNodeConfig(true));
+            GraphStoreSinkWriter writer =
+                new GraphStoreSinkWriter(
+                    UUID.randomUUID().toString(), "图存储", new GraphStoreSinkNodeConfig(true));
             BuilderContext context =
                 new BuilderContext()
                     .setProjectId(request.getProjectId())
@@ -201,12 +198,13 @@ public class GraphController extends BaseController {
 
             SubGraphRecord subGraph =
                 JSON.parseObject(JSON.toJSONString(request.getSubGraph()), SubGraphRecord.class);
-            writer.writeToNeo4j(subGraph);
+            List<BaseRecord> records = Lists.newArrayList();
+            records.add(subGraph);
+            writer.write(records);
+
             if (context.isEnableLeadTo()) {
               ReasonProcessor reasonProcessor = new ReasonProcessor();
               reasonProcessor.init(context);
-              List<BaseRecord> records = Lists.newArrayList();
-              records.add(subGraph);
               List<BaseRecord> reasonResults = reasonProcessor.process(records);
               if (CollectionUtils.isNotEmpty(reasonResults)) {
                 GraphStoreSinkWriter sinkWriter =
