@@ -39,9 +39,7 @@ import com.antgroup.openspg.server.biz.schema.ConceptManager;
 import com.antgroup.openspg.server.biz.schema.SchemaManager;
 import com.antgroup.openspg.server.biz.service.GraphManager;
 import com.google.common.collect.Lists;
-
 import java.util.*;
-
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -175,8 +173,7 @@ public class GraphController extends BaseController {
           @Override
           public Boolean action() {
             ProjectSchema projectSchema = schemaManager.getProjectSchema(request.getProjectId());
-            boolean enableLeadTo =
-                    request.getEnableLeadTo() != null && request.getEnableLeadTo();
+            boolean enableLeadTo = request.getEnableLeadTo() != null && request.getEnableLeadTo();
             Map<SPGTypeIdentifier, ConceptList> conceptLists =
                 getConceptLists(enableLeadTo, projectSchema);
             GraphStoreSinkWriter writer =
